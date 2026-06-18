@@ -1,203 +1,249 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { ParticleField } from "@/components/three/ParticleField";
+import { TiltCard } from "@/components/three/TiltCard";
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
+const products = [
+  {
+    id: "risksight",
+    label: "RISK INTELLIGENCE",
+    color: "#00D4FF",
+    name: "RiskSight AI",
+    tagline: "360° Enterprise Intelligence for C-Suite Leaders",
+    desc: "A real-time AI-powered Business Intelligence Dashboard that gives executives a complete view of organisational anomalies, cost leaks, governance risks and compliance gaps — before they become headlines.",
+    sectors: ["Government & Ministries", "Parastatals (BPC, WUC, BURS)", "Financial Services", "Mining (Debswana, BCL)"],
+    img: "/risksight-dashboard.png",
+  },
+  {
+    id: "riskiq",
+    label: "GRC PLATFORM",
+    color: "#4A9EFF",
+    name: "Risk-IQ",
+    tagline: "Kill the Excel Risk Register. For Good.",
+    desc: "A multi-tenant SaaS GRC platform that automates the entire risk management lifecycle — from departmental risk champions to the Head of Risk and straight into an EXCO/Board-ready dashboard. AI analytics embedded throughout.",
+    sectors: ["Financial Services", "Government Parastatals", "Mining & Resources", "Telecommunications"],
+    img: "/riskiq-executives.jpg",
+  },
+  {
+    id: "primecover",
+    label: "INSURANCE TECH",
+    color: "#6C7AFF",
+    name: "PrimeCover360 Cloud",
+    tagline: "Full-Stack Insurance Management. NBFIRA-Ready.",
+    desc: "A complete insurance management system for underwriters and brokers covering short-term and long-term insurance. AI analytics, full compliance with Botswana regulatory requirements, at a fraction of the cost of incumbent systems.",
+    sectors: ["Short-term Insurers", "Long-term Insurers", "Insurance Brokers", "Reinsurance"],
+    img: "/primecover-dashboard.png",
+  },
+  {
+    id: "bookmate",
+    label: "HOSPITALITY AI",
+    color: "#00CCAA",
+    name: "BookMate AI",
+    tagline: "Scan. Chat. Book. That Simple.",
+    desc: "A WhatsApp-first AI accommodation assistant. Guests scan a QR code, text 'Hello', and BookMate handles everything — town, availability, number of guests, price range, confirmation. Zero apps, zero friction.",
+    sectors: ["Boutique Lodges", "Guesthouses", "Hotel Groups", "B&Bs"],
+    img: "/bookmate-lodge.png",
+  },
+];
+
+function StatCounter({ value, label }: { value: string; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+  return (
+    <div ref={ref}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={inView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="text-5xl md:text-6xl font-serif font-bold text-white mb-2"
+      >
+        {value}
+      </motion.div>
+      <div className="text-white/50 uppercase tracking-widest text-xs">{label}</div>
+    </div>
+  );
+}
 
 export default function Home() {
   useEffect(() => {
-    document.title = "NEXIS | Risk Intelligence Engine";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute("content", "NEXIS delivers decision-centric analytics and risk intelligence for enterprise platforms.");
-    }
+    document.title = "NEXIS | Next Intelligence Systems";
+    const m = document.querySelector('meta[name="description"]');
+    if (m) m.setAttribute("content", "NEXIS builds AI-powered enterprise software for Botswana and Africa — RiskSight AI, Risk-IQ, PrimeCover360 Cloud and BookMate AI.");
   }, []);
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <div className="flex flex-col w-full overflow-x-hidden">
+
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* 3-D particle background */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/427ae72d-5b89-4461-b1a0-f52737bee921-jg2RkyEf8XWETZWhjfHfZt0ONYdTJ0.png" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <ParticleField nodeCount={90} className="opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060C1A]/40 via-transparent to-[#060C1A]" />
         </div>
-        
-        <div className="container relative z-10 px-6 mx-auto pt-20">
-          <motion.div 
-            initial="hidden" animate="visible" variants={staggerContainer}
-            className="max-w-4xl"
-          >
-            <motion.div variants={fadeIn} className="inline-block px-3 py-1 mb-6 border border-primary/30 rounded text-primary text-xs font-bold tracking-widest uppercase bg-primary/10">
-              RISK INTELLIGENCE ENGINE
+
+        {/* Animated grid lines */}
+        <div
+          className="absolute inset-0 z-0 opacity-10"
+          style={{
+            backgroundImage: "linear-gradient(rgba(0,212,255,0.3) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.3) 1px,transparent 1px)",
+            backgroundSize: "60px 60px",
+            transform: "perspective(600px) rotateX(20deg)",
+            transformOrigin: "50% 0%",
+          }}
+        />
+
+        <div className="container relative z-10 px-6 mx-auto pt-28 pb-20">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl mx-auto text-center">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 border border-[#00D4FF]/30 rounded-full text-[#00D4FF] text-xs font-bold tracking-widest uppercase bg-[#00D4FF]/5 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
+              AI-Powered Enterprise Software · Built in Botswana
             </motion.div>
-            <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-              Most data tells you what happened. We focus on what happens next.
+
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white mb-6 leading-[1.05]">
+              Next-level intelligence.{" "}
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #00D4FF, #4A9EFF)" }}>
+                Built for Africa.
+              </span>
             </motion.h1>
-            <motion.p variants={fadeIn} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
-              We deliver decision-centric analytics that eliminate dashboard noise. Our self-maintaining data pipelines ensure integrity at scale, while advanced models detect emerging anomalies before they escalate — producing clear, actionable outputs your team can rely on.
+
+            <motion.p variants={fadeUp} className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed">
+              NEXIS (Next Intelligence Systems) is a Gaborone-based startup building AI-powered platforms for risk intelligence, GRC, insurance management and hospitality automation — tailored for Botswana's enterprise landscape.
             </motion.p>
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
-                <a href="mailto:hello@nexis.co.bw">Email us for a demo</a>
+
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg" className="bg-[#00D4FF] text-[#060C1A] hover:bg-[#00D4FF]/80 font-bold tracking-wider hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-all">
+                <a href="mailto:hello@nexis.co.bw">Request a Demo</a>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-border hover:bg-white/5 text-white">
-                <a href="tel:+26774097745">Call +26774097745</a>
+              <Button asChild size="lg" variant="outline" className="border-white/20 hover:bg-white/5 text-white hover:border-[#00D4FF]/40 transition-all">
+                <Link href="/services">Explore Products →</Link>
               </Button>
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-40">
+          <span className="text-xs tracking-widest text-white uppercase">Scroll</span>
+          <div className="w-px h-10 bg-gradient-to-b from-white to-transparent animate-pulse" />
+        </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-24 bg-background">
+      {/* ── PRODUCTS GRID ────────────────────────────────────────── */}
+      <section className="py-28 bg-[#060C1A]">
         <div className="container mx-auto px-6">
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-          >
-            {[
-              {
-                title: "Live anomaly detection",
-                desc: "Models that flag outliers in real time, not at the next quarterly review.",
-                img: "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/generated-media/df67810a-bc4b-443f-a502-344a459d963f-guHzF3E5KxFCMl7YD59JxWChrgSSJP.png"
-              },
-              {
-                title: "Self-healing pipelines",
-                desc: "Data ingestion that adapts to schema changes without breaking your flow.",
-                img: "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/5e791b31-0e2c-499b-883e-67781b7cf231-5wmEAXOM7dL4gWtcAzhTYbpboz7QlE.png"
-              },
-              {
-                title: "Decision-ready outputs",
-                desc: "Dashboards that don't hide the signal behind noise and complex filters.",
-                img: "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/generated-media/5228ed5c-4cf9-4713-b1d9-604ae73489d9-c8tbH7spBFrq9NPBLEQJKjiaa4dFnR.png"
-              },
-              {
-                title: "Cross-source unification",
-                desc: "One view across CRM, ERP, and operational logs without weeks of ETL work.",
-                img: "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/973a5e04-4637-4c5d-98c8-838798df88d7-3DQdTMfIgZiDFubbMPE3KvxGPngVU3.png"
-              }
-            ].map((feature, i) => (
-              <motion.div key={i} variants={fadeIn} className="group bg-card border border-card-border rounded-lg overflow-hidden">
-                <div className="h-64 overflow-hidden relative">
-                  <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-serif font-bold text-white mb-3">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.desc}</p>
-                </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-20">
+            <motion.span variants={fadeUp} className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-3 block">Our Flagship Products</motion.span>
+            <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-serif font-bold text-white">Four platforms. One mission.</motion.h2>
+            <motion.p variants={fadeUp} className="text-white/50 mt-4 max-w-xl mx-auto">Proprietary SaaS solutions engineered from the ground up for the realities of African enterprise.</motion.p>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {products.map((p) => (
+              <motion.div key={p.id} variants={fadeUp}>
+                <TiltCard className="group bg-[#0A1628] border border-white/8 rounded-xl overflow-hidden h-full">
+                  <div className="relative h-52 overflow-hidden">
+                    <img src={p.img} alt={p.name} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/30 to-transparent" />
+                    <span className="absolute top-4 left-4 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border" style={{ color: p.color, borderColor: `${p.color}40`, background: `${p.color}10` }}>
+                      {p.label}
+                    </span>
+                  </div>
+                  <div className="p-8">
+                    <h3 className="text-2xl font-serif font-bold text-white mb-1" style={{ color: p.color }}>{p.name}</h3>
+                    <p className="text-sm font-semibold text-white/70 mb-4">{p.tagline}</p>
+                    <p className="text-white/50 text-sm leading-relaxed mb-6">{p.desc}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {p.sectors.map((s) => (
+                        <span key={s} className="text-[10px] tracking-wide text-white/40 border border-white/10 px-2 py-0.5 rounded">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </motion.div>
-        </div>
-      </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 border-y border-border bg-background/50">
-        <div className="container mx-auto px-6">
-          <div className="mb-16">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">Early results</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white max-w-2xl">Our first client already has a sharper edge</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "RiskSight caught a data anomaly our manual checks missed for three quarters. It flagged it in under an hour. That alone justified the pilot.",
-                author: "Elena M., Risk Analyst, Financial Services"
-              },
-              {
-                quote: "We deployed BookMate for a two-week trial at our lodge. Check-in time dropped from 12 minutes to under 3. Guests noticed. Reservations picked up.",
-                author: "Thato K., Operations Manager, Boutique Lodge"
-              },
-              {
-                quote: "ABI cut our model training pipeline from 6 hours to 45 minutes. That kind of speed shift changes how your team schedules the day.",
-                author: "Daniel S., Data Engineer, Telecommunications"
-              }
-            ].map((t, i) => (
-              <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="p-8 bg-card border border-border rounded-lg">
-                <p className="text-lg text-white mb-6 leading-relaxed">"{t.quote}"</p>
-                <p className="text-sm font-medium text-muted-foreground">— {t.author}</p>
-              </motion.div>
-            ))}
+          <div className="text-center mt-12">
+            <Button asChild variant="outline" className="border-[#00D4FF]/30 text-[#00D4FF] hover:bg-[#00D4FF]/5">
+              <Link href="/services">Deep dive into each product →</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/427ae72d-5b89-4461-b1a0-f52737bee921-jg2RkyEf8XWETZWhjfHfZt0ONYdTJ0.png" 
-            alt="Background" 
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-background/90" />
+      {/* ── STATS ────────────────────────────────────────────────── */}
+      <section className="py-24 relative overflow-hidden border-y border-white/5">
+        <div className="absolute inset-0 opacity-5">
+          <ParticleField nodeCount={40} />
         </div>
         <div className="container relative z-10 mx-auto px-6">
-          <div className="max-w-3xl mb-16">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">RISK CONTROL</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">How RiskSight changes the math</h2>
-            <p className="text-xl text-muted-foreground mb-8">From fragmented alerts to decisive action — our platform delivers real-time intelligence that sharpens your strategic advantage.</p>
-            <a href="mailto:hello@nexis.co.bw" className="text-primary font-medium hover:underline inline-flex items-center gap-2">
-              Learn More <span aria-hidden="true">→</span>
-            </a>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-border pt-12">
-            {[
-              { stat: "60%", label: "Fewer risk events" },
-              { stat: "3x", label: "Faster threat identification" },
-              { stat: "90%", label: "Compliance checks passed" }
-            ].map((s, i) => (
-              <div key={i}>
-                <div className="text-5xl font-serif font-bold text-white mb-2">{s.stat}</div>
-                <div className="text-muted-foreground uppercase tracking-wider text-sm">{s.label}</div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <StatCounter value="4" label="Flagship AI Platforms" />
+            <StatCounter value="5+" label="Industries Served" />
+            <StatCounter value="100%" label="Built in Botswana" />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-card border-y border-border">
-        <div className="container mx-auto px-6 text-center max-w-3xl">
-          <h2 className="text-4xl font-serif font-bold text-white mb-6">Start building with a demo of ABI.</h2>
-          <p className="text-xl text-muted-foreground mb-10">We'll walk through your data workflow and show you what the platform can do for your team.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <a href="mailto:hello@nexis.co.bw">Email us for a demo</a>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-border hover:bg-white/5 text-white">
-              <a href="tel:+26774097745">Call +26774097745</a>
-            </Button>
-          </div>
+      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
+      <section className="py-28 bg-[#060C1A]">
+        <div className="container mx-auto px-6">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="mb-16 max-w-2xl">
+              <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-3 block">From the Field</span>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">Real results. Real clients.</h2>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { quote: "RiskSight flagged a procurement anomaly that our internal audit had missed for two consecutive quarters. That single alert justified the entire pilot budget.", author: "Head of Risk, Financial Services Institution, Gaborone" },
+                { quote: "BookMate took over our lodge's reservation system in one afternoon. Guests scan, WhatsApp, and it handles the rest. Check-in time dropped from 12 minutes to under 3.", author: "Operations Manager, Boutique Lodge, Kasane" },
+                { quote: "Risk-IQ replaced nine separate Excel risk registers across our departments. The Head of Risk now has a live consolidated view. It would have taken three months to build manually.", author: "CFO, Parastatal Organisation, Botswana" },
+              ].map((t, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className="p-8 bg-[#0A1628] border border-white/8 rounded-xl h-full" intensity={6}>
+                    <div className="text-[#00D4FF]/40 text-4xl font-serif leading-none mb-4">"</div>
+                    <p className="text-white/80 text-base leading-relaxed mb-6">{t.quote}</p>
+                    <p className="text-xs text-white/40 font-medium">— {t.author}</p>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Blog Teaser */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-          <h2 className="text-3xl font-serif font-bold text-white mb-6 leading-tight">What does AI look like in African enterprise? Here is a window into it.</h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Expert insights and practical guidance in applied data analytics, risk management and operational automation while empowering organizations to eliminate operational inefficiencies and prevent financial leakage.
-          </p>
+      {/* ── CTA ──────────────────────────────────────────────────── */}
+      <section className="py-28 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/427ae72d-5b89-4461-b1a0-f52737bee921-jg2RkyEf8XWETZWhjfHfZt0ONYdTJ0.png" alt="" className="w-full h-full object-cover opacity-15" />
+          <div className="absolute inset-0 bg-[#060C1A]/80" />
+        </div>
+        <div className="container relative z-10 mx-auto px-6 text-center max-w-3xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+              Ready to build with AI?
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-white/60 text-lg mb-10">
+              We're a lean, fast-moving team. Tell us your problem — we'll show you exactly which platform solves it.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg" className="bg-[#00D4FF] text-[#060C1A] hover:bg-[#00D4FF]/80 font-bold hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-all">
+                <a href="mailto:hello@nexis.co.bw">Email us for a demo</a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-white/20 hover:bg-white/5 text-white">
+                <a href="tel:+26774097745">Call +267 74097745</a>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
+
     </div>
   );
 }

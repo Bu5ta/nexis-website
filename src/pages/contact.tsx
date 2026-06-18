@@ -6,181 +6,233 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { ParticleField } from "@/components/three/ParticleField";
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 export default function Contact() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [selectedProduct, setSelectedProduct] = useState("");
 
-  useEffect(() => {
-    document.title = "Contact | NEXIS";
-  }, []);
+  useEffect(() => { document.title = "Contact NEXIS | Next Intelligence Systems"; }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    // In a real app this would send data, here we just show success state or could trigger mailto
+    setStatus("sending");
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    const body = {
+      name: data.get("name") as string,
+      email: data.get("email") as string,
+      phone: data.get("phone") as string,
+      company: data.get("company") as string,
+      industry: data.get("industry") as string,
+      product: selectedProduct,
+      message: data.get("message") as string,
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        setStatus("sent");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden border-b border-border">
+    <div className="flex flex-col w-full overflow-x-hidden">
+
+      {/* ── HERO ──────────────────────────────────────────────────── */}
+      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/201b03cc-8c09-4875-bb5f-230ae509df78-ZgCp2C4quo8GTdFHSXFndYjWY5ap9F.png" 
-            alt="Contact Hero" 
-            className="w-full h-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+          <img src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/201b03cc-8c09-4875-bb5f-230ae509df78-ZgCp2C4quo8GTdFHSXFndYjWY5ap9F.png" alt="" className="w-full h-full object-cover opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#060C1A] via-[#060C1A]/60 to-transparent" />
+          <div className="absolute inset-0 opacity-20"><ParticleField nodeCount={40} /></div>
         </div>
-        
         <div className="container relative z-10 px-6 mx-auto text-center">
-          <motion.div initial="hidden" animate="visible" variants={fadeIn} className="max-w-4xl mx-auto">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">GET IN TOUCH</span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white leading-tight">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-3xl mx-auto">
+            <motion.span variants={fadeUp} className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Get in Touch</motion.span>
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl font-serif font-bold text-white leading-tight">
               Tell us what you need built.
-            </h1>
+            </motion.h1>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-24 bg-background">
+      {/* ── CONTACT FORM ─────────────────────────────────────────── */}
+      <section className="py-24 bg-[#060C1A]">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            
-            {/* Left Column - Intro & Info */}
-            <div>
-              <div className="mb-12">
-                <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">REACH NEXIS</span>
-                <h2 className="text-4xl font-serif font-bold text-white mb-6">Get in touch</h2>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Whether you need risk intelligence, AI orchestration or operational automation, we're ready to talk. Reach the NEXIS team directly at <a href="mailto:hello@nexis.co.bw" className="text-primary hover:underline">hello@nexis.co.bw</a> or call <a href="tel:+26774097745" className="text-primary hover:underline">+267 74097745</a>.
+
+            {/* Left — info */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+              <motion.div variants={fadeUp} className="mb-12">
+                <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Reach NEXIS</span>
+                <h2 className="text-4xl font-serif font-bold text-white mb-6">Let's talk.</h2>
+                <p className="text-white/60 text-lg leading-relaxed">
+                  Whether you're fighting a broken Excel GRC process, trying to get ahead of risk before the auditors do, managing insurance the hard way, or looking to automate your accommodation bookings — we have a platform for it. Reach out directly.
                 </p>
-              </div>
+              </motion.div>
 
-              <div className="rounded-lg overflow-hidden border border-border bg-card mb-8">
-                <img 
-                  src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/6747b22a-c733-4a2c-8bf9-0d2c1e3f62e5-nBU20BhdO6AQfPlydfbck04EcKk2f9.png" 
-                  alt="NEXIS Office" 
-                  className="w-full h-64 object-cover opacity-80"
-                />
+              <motion.div variants={fadeUp} className="rounded-xl overflow-hidden border border-white/8 bg-[#0A1628] mb-8">
+                <img src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/6747b22a-c733-4a2c-8bf9-0d2c1e3f62e5-nBU20BhdO6AQfPlydfbck04EcKk2f9.png" alt="Gaborone" className="w-full h-48 object-cover opacity-70" />
                 <div className="p-8">
-                  <h3 className="font-serif font-bold text-white text-xl mb-4">Headquarters</h3>
-                  <div className="space-y-4 text-muted-foreground">
-                    <p>Unit 3, Plot 1632<br />Gaborone International Commerce Park<br />Gaborone, Botswana</p>
-                    <p><a href="mailto:hello@nexis.co.bw" className="hover:text-primary transition-colors">hello@nexis.co.bw</a></p>
-                    <p><a href="tel:+26774097745" className="hover:text-primary transition-colors">+267 74097745</a></p>
+                  <h3 className="font-bold text-white text-lg mb-4">Headquarters</h3>
+                  <div className="space-y-3 text-sm text-white/50">
+                    <p>Gaborone, Botswana</p>
+                    <p><a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF] hover:underline">hello@nexis.co.bw</a></p>
+                    <p><a href="tel:+26774097745" className="hover:text-[#00D4FF] transition-colors">+267 74097745</a></p>
                   </div>
                 </div>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+                {[
+                  { product: "RiskSight AI", color: "#00D4FF", desc: "C-Suite risk intelligence" },
+                  { product: "Risk-IQ", color: "#4A9EFF", desc: "GRC & compliance platform" },
+                  { product: "PrimeCover360", color: "#6C7AFF", desc: "Insurance management" },
+                  { product: "BookMate AI", color: "#00CCAA", desc: "Hospitality automation" },
+                ].map((p) => (
+                  <div key={p.product} className="p-4 bg-[#0A1628] border border-white/8 rounded-xl hover:border-white/15 transition-colors">
+                    <div className="w-2 h-2 rounded-full mb-2" style={{ backgroundColor: p.color }} />
+                    <p className="font-bold text-white text-sm">{p.product}</p>
+                    <p className="text-white/40 text-xs mt-0.5">{p.desc}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* Right — form */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <div className="bg-[#0A1628] border border-white/8 p-8 md:p-10 rounded-xl">
+                <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Send a Message</span>
+                <h2 className="text-2xl font-serif font-bold text-white mb-2">One team. One inbox. One clear response.</h2>
+                <p className="text-white/50 text-sm mb-8">We build enterprise AI for Botswana. Tell us your operational challenge and we'll show you exactly how one of our platforms solves it.</p>
+
+                {status === "sent" ? (
+                  <div className="p-8 bg-[#00D4FF]/5 border border-[#00D4FF]/20 rounded-xl text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/30 flex items-center justify-center mx-auto mb-4">
+                      <span className="text-[#00D4FF] text-xl">✓</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Message Sent</h3>
+                    <p className="text-white/50 text-sm">We'll be in touch shortly. You can also reach us at <a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF]">hello@nexis.co.bw</a></p>
+                    <Button variant="outline" className="mt-6 border-white/20 text-white hover:bg-white/5" onClick={() => { setStatus("idle"); setSelectedProduct(""); }}>Send another</Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-white/60 text-xs font-medium uppercase tracking-wider">Name</Label>
+                        <Input name="name" id="name" required placeholder="Your full name" className="bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-white/60 text-xs font-medium uppercase tracking-wider">Email</Label>
+                        <Input name="email" id="email" type="email" required placeholder="you@company.com" className="bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="space-y-2">
+                        <Label htmlFor="phone" className="text-white/60 text-xs font-medium uppercase tracking-wider">Phone</Label>
+                        <Input name="phone" id="phone" type="tel" placeholder="+267 ..." className="bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="company" className="text-white/60 text-xs font-medium uppercase tracking-wider">Organisation</Label>
+                        <Input name="company" id="company" required placeholder="Company or institution" className="bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="space-y-2">
+                        <Label htmlFor="industry" className="text-white/60 text-xs font-medium uppercase tracking-wider">Industry</Label>
+                        <Input name="industry" id="industry" placeholder="e.g. Financial Services" className="bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-white/60 text-xs font-medium uppercase tracking-wider">Product of Interest</Label>
+                        <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+                          <SelectTrigger className="bg-[#060C1A] border-white/10 focus:ring-[#00D4FF]/30 text-white">
+                            <SelectValue placeholder="Select a product" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#0A1628] border-white/10">
+                            <SelectItem value="RiskSight AI — Risk Intelligence">RiskSight AI — Risk Intelligence</SelectItem>
+                            <SelectItem value="Risk-IQ — GRC Platform">Risk-IQ — GRC Platform</SelectItem>
+                            <SelectItem value="PrimeCover360 — Insurance">PrimeCover360 — Insurance</SelectItem>
+                            <SelectItem value="BookMate AI — Hospitality">BookMate AI — Hospitality</SelectItem>
+                            <SelectItem value="Not sure — advise me">Not sure — advise me</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="message" className="text-white/60 text-xs font-medium uppercase tracking-wider">What's the challenge?</Label>
+                      <Textarea name="message" id="message" required placeholder="Tell us about your operational challenge or what you're trying to solve..." className="min-h-[120px] bg-[#060C1A] border-white/10 focus-visible:ring-[#00D4FF]/30 text-white placeholder:text-white/25" />
+                    </div>
+
+                    {status === "error" && (
+                      <p className="text-red-400 text-sm">
+                        Couldn't deliver the message right now. Please email us directly at{" "}
+                        <a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF] underline">hello@nexis.co.bw</a>
+                      </p>
+                    )}
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={status === "sending"}
+                      className="w-full bg-[#00D4FF] text-[#060C1A] hover:bg-[#00D4FF]/80 font-bold tracking-wider hover:shadow-[0_0_20px_rgba(0,212,255,0.3)] transition-all disabled:opacity-60"
+                    >
+                      {status === "sending" ? "Sending…" : "Send Message"}
+                    </Button>
+                  </form>
+                )}
               </div>
-            </div>
-
-            {/* Right Column - Form */}
-            <div className="bg-card border border-border p-8 md:p-10 rounded-lg">
-              <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">SEND A MESSAGE</span>
-              <h2 className="text-3xl font-serif font-bold text-white mb-4">One team, one inbox, one clear response. Tell us what you need.</h2>
-              <p className="text-muted-foreground mb-8">We build enterprise-grade AI platforms from Botswana. Tell us about your operations, and we'll tell you how our tools fit.</p>
-
-              {isSubmitted ? (
-                <div className="p-6 bg-primary/10 border border-primary/30 rounded-lg text-center">
-                  <h3 className="text-xl font-bold text-white mb-2">Message Sent</h3>
-                  <p className="text-muted-foreground">Thank you for reaching out. We will get back to you shortly.</p>
-                  <Button variant="outline" className="mt-6" onClick={() => setIsSubmitted(false)}>Send another</Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" required placeholder="John Doe" className="bg-background border-border focus-visible:ring-primary" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" required placeholder="john@company.com" className="bg-background border-border focus-visible:ring-primary" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input id="phone" type="tel" placeholder="+267..." className="bg-background border-border focus-visible:ring-primary" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company name</Label>
-                      <Input id="company" required placeholder="Acme Corp" className="bg-background border-border focus-visible:ring-primary" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="industry">Industry</Label>
-                      <Input id="industry" required placeholder="e.g. Financial Services" className="bg-background border-border focus-visible:ring-primary" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="product">Which product are you interested in?</Label>
-                      <Select required>
-                        <SelectTrigger className="bg-background border-border focus:ring-primary">
-                          <SelectValue placeholder="Select a product" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="abi">ABI (AI Orchestration)</SelectItem>
-                          <SelectItem value="risksight">RiskSight (Risk Intelligence)</SelectItem>
-                          <SelectItem value="primecover">PrimeCover (Insurance)</SelectItem>
-                          <SelectItem value="bookmate">BookMate (Hospitality)</SelectItem>
-                          <SelectItem value="unsure">Not sure yet</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" required placeholder="Tell us about your operational challenges..." className="min-h-[120px] bg-background border-border focus-visible:ring-primary" />
-                  </div>
-
-                  <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
-                    Send message
-                  </Button>
-                </form>
-              )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-24 bg-card border-t border-border">
+      {/* ── FAQ ───────────────────────────────────────────────────── */}
+      <section className="py-24 bg-[#080F1E] border-t border-white/5">
         <div className="container mx-auto px-6 max-w-4xl">
-          <div className="text-center mb-16">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">YOUR QUESTIONS</span>
-            <h2 className="text-4xl font-serif font-bold text-white mb-4">What everyone else promises, we just built.</h2>
-            <p className="text-muted-foreground mb-6">Honest answers about our AI platforms, how they work, and what you can expect when you work with us.</p>
-            <a href="mailto:hello@nexis.co.bw" className="text-primary hover:underline font-medium">Ask us anything</a>
-          </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Before You Write</span>
+              <h2 className="text-4xl font-serif font-bold text-white mb-4">Common questions.</h2>
+              <p className="text-white/50 mb-6">Honest answers about working with NEXIS and what to expect.</p>
+              <a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF] hover:underline font-medium text-sm">Ask us anything →</a>
+            </motion.div>
 
-          <Accordion type="single" collapsible className="w-full">
-            {[
-              { q: "How long does it take to get a platform like RiskSight or ABI up and running?", a: "Most deployments are live within 4 to 6 weeks, depending on the complexity of your legacy systems and data cleanliness." },
-              { q: "Can a small team in Gaborone handle enterprise-grade AI projects?", a: "Yes. Our lean structure is a deliberate choice. We deploy advanced self-healing orchestration to manage scale without bloating headcount. You get direct access to the engineers, not account managers." },
-              { q: "What industries do your platforms actually work for?", a: "Our core deployments are in Insurance, Financial Services, Hospitality, Mining, and Telecommunications, though the ABI Orchestrator is industry-agnostic." },
-              { q: "Do I need a dedicated data science team to use NEXIS platforms?", a: "No. Our platforms abstract the complexity. Your operational team receives decision-ready outputs without needing to write queries or train models." },
-              { q: "What does support look like for a new client?", a: "We provide complete implementation, continuous model tuning, and direct technical support. We don't hand off a complex tool and walk away." },
-              { q: "Is NEXIS just a consulting firm that builds custom software?", a: "No. We are a product company. ABI, RiskSight, PrimeCover, and BookMate are proprietary, self-maintained platforms that we license and deploy." }
-            ].map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-border">
-                <AccordionTrigger className="text-left text-lg font-medium text-white hover:text-primary transition-colors">{faq.q}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-base leading-relaxed">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+            <Accordion type="single" collapsible className="w-full space-y-2">
+              {[
+                { q: "How long does it take to get a platform live?", a: "BookMate AI: days. RiskSight AI and Risk-IQ: 4–6 weeks for a standard deployment. PrimeCover360 Cloud: 8–12 weeks for full implementation. We don't do 12-month enterprise software rollouts." },
+                { q: "Can a small Gaborone team actually handle enterprise-grade AI projects?", a: "Yes. Our lean structure is deliberate. We use AI-assisted development tools throughout our stack (yes, we vibe-code). You get direct access to the engineer who built the platform — not a project manager who has never seen the code." },
+                { q: "Do I need a data science team or technical staff to use your platforms?", a: "No. Our platforms abstract the complexity. Your team gets decision-ready dashboards and automated workflows. You don't write queries, train models or maintain pipelines. We do that." },
+                { q: "What does support look like after deployment?", a: "Continuous model tuning, platform updates and direct access to the engineering team. We don't hand off a complex tool and disappear. Our clients have our numbers." },
+                { q: "Is NEXIS a consulting firm or a product company?", a: "Product company. RiskSight AI, Risk-IQ, PrimeCover360 and BookMate AI are proprietary platforms we license and deploy. We do not build custom bespoke systems for each client — we configure and deploy our existing products." },
+                { q: "What sectors do you currently serve in Botswana?", a: "Financial services, insurance, government and parastatals, mining, telecommunications and hospitality. If your sector isn't listed — reach out. Our core platforms (especially Risk-IQ and RiskSight AI) are sector-adaptable." },
+              ].map((faq, i) => (
+                <AccordionItem key={i} value={`item-${i}`} className="border border-white/8 rounded-xl px-6 bg-[#0A1628] data-[state=open]:border-[#00D4FF]/30">
+                  <AccordionTrigger className="text-left text-base font-semibold text-white hover:text-[#00D4FF] transition-colors py-5">{faq.q}</AccordionTrigger>
+                  <AccordionContent className="text-white/50 text-sm leading-relaxed pb-5">{faq.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </motion.div>
         </div>
       </section>
+
     </div>
   );
 }

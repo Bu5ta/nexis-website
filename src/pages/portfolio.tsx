@@ -1,142 +1,192 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { ParticleField } from "@/components/three/ParticleField";
+import { TiltCard } from "@/components/three/TiltCard";
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
+
+const products = [
+  {
+    name: "RiskSight AI",
+    label: "Risk Intelligence",
+    color: "#00D4FF",
+    tagline: "360° Enterprise Intelligence for C-Suite Leaders",
+    what: "A multi-tenant SaaS Business Intelligence Dashboard that surfaces organisational anomalies, cost leaks, governance risks and compliance gaps in real time — giving executives the full picture before auditors find it.",
+    industries: ["Government & Ministries", "Parastatals", "Financial Services", "Mining & Resources"],
+    img: "/risksight-dashboard.png",
+    highlights: ["AI anomaly detection", "Cost leak surveillance", "Governance risk monitoring", "One-click audit reports"],
+  },
+  {
+    name: "Risk-IQ",
+    label: "GRC Platform",
+    color: "#4A9EFF",
+    tagline: "End-to-End GRC — From Risk Champion to Board",
+    what: "Replaces the endless cycle of Excel-based risk registers with an automated, multi-level GRC platform. Departmental risk champions log risks directly. The Head of Risk sees a live consolidated view. EXCO gets a real-time board-ready dashboard.",
+    industries: ["Financial Services", "Government Depts", "Parastatals", "Telecommunications"],
+    img: "/riskiq-executives.jpg",
+    highlights: ["Multi-level risk workflows", "AI risk scoring", "Regulatory compliance mapping", "EXCO / Board dashboards"],
+  },
+  {
+    name: "PrimeCover360 Cloud",
+    label: "Insurance Technology",
+    color: "#6C7AFF",
+    tagline: "Full-Stack Insurance Management. NBFIRA-Ready.",
+    what: "A complete insurance management system for Botswana's short-term and long-term insurers and brokers. Policy issuance, claims processing, underwriting, broker management and NBFIRA compliance — all in one platform, at a price point local operators can actually afford.",
+    industries: ["Short-term Insurers", "Life & Long-term Insurers", "Insurance Brokers", "Funeral Assurers"],
+    img: "/primecover-dashboard.png",
+    highlights: ["Full policy lifecycle", "AI-assisted claims", "NBFIRA compliance", "Embedded BI analytics"],
+  },
+  {
+    name: "BookMate AI",
+    label: "Hospitality AI",
+    color: "#00CCAA",
+    tagline: "WhatsApp-First Accommodation Booking",
+    what: "A WhatsApp-native AI booking assistant. Guests scan a QR code, send one message, and BookMate handles the entire booking conversation — availability, pricing, confirmation, and check-in details. No apps, no websites, no manual input.",
+    industries: ["Boutique Lodges", "Guesthouses & B&Bs", "Hotel Groups", "Self-Catering & Safari"],
+    img: "/bookmate-lodge.png",
+    highlights: ["WhatsApp-native UX", "QR code entry point", "AI conversation engine", "Multi-property management"],
+  },
+];
 
 export default function Portfolio() {
-  useEffect(() => {
-    document.title = "Work & Deployments | NEXIS";
-  }, []);
+  useEffect(() => { document.title = "Our Products & Work | NEXIS"; }, []);
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden border-b border-border">
+    <div className="flex flex-col w-full overflow-x-hidden">
+
+      {/* ── HERO ──────────────────────────────────────────────────── */}
+      <section className="relative h-[65vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/b803fc21-220e-4ca1-b68e-37de0f3e8d6b-Obi4FHA5SWrxToddqEgyiXMuQ1XvlQ.png" 
-            alt="Portfolio Hero" 
-            className="w-full h-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+          <img src="https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/b803fc21-220e-4ca1-b68e-37de0f3e8d6b-Obi4FHA5SWrxToddqEgyiXMuQ1XvlQ.png" alt="" className="w-full h-full object-cover opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#060C1A] via-[#060C1A]/60 to-transparent" />
+          <div className="absolute inset-0 z-0 opacity-25"><ParticleField nodeCount={60} /></div>
         </div>
-        
         <div className="container relative z-10 px-6 mx-auto">
-          <motion.div initial="hidden" animate="visible" variants={fadeIn} className="max-w-4xl">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">AI AT WORK</span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white leading-tight">
-              Smart AI orchestration. Seamless operations. Uncompromising reliability.
-            </h1>
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-4xl">
+            <motion.span variants={fadeUp} className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">AI at Work</motion.span>
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl font-serif font-bold text-white leading-tight">
+              Four platforms. Built. Deployed. Running.
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-white/60 text-lg mt-4 max-w-2xl">
+              Every product in our portfolio has been engineered to production-grade standards and deployed in live operational environments.
+            </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* Deployments Section */}
-      <section className="py-24 bg-background">
+      {/* ── PRODUCT DEEP DIVES ────────────────────────────────────── */}
+      <section className="py-28 bg-[#060C1A]">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div className="max-w-2xl">
-              <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">LIVE DEPLOYMENTS</span>
-              <h2 className="text-4xl font-serif font-bold text-white mb-6">4 platforms live across 6 industries</h2>
-              <p className="text-xl text-muted-foreground">
-                Each NEXIS platform has been successfully deployed and proven in live operational environments.
-              </p>
+              <motion.span variants={fadeUp} className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-3 block">Product Portfolio</motion.span>
+              <motion.h2 variants={fadeUp} className="text-4xl font-serif font-bold text-white">Designed in Gaborone. Built for Africa.</motion.h2>
             </div>
-            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary/10">
-              <a href="mailto:hello@nexis.co.bw">Discuss a deployment with us</a>
-            </Button>
-          </div>
+            <motion.div variants={fadeUp}>
+              <Button asChild variant="outline" className="border-[#00D4FF]/30 text-[#00D4FF] hover:bg-[#00D4FF]/5">
+                <a href="mailto:hello@nexis.co.bw">Discuss a deployment</a>
+              </Button>
+            </motion.div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/92d8c3c0-c7d6-4b5a-bbf3-9cec8f3ffcf0-Ex8gpQxYnmgngUeq1LfpFG7rUUxnq2.png",
-              "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/9c6c99e2-f703-4891-926d-3b04f2391bf8-mpDcXD2qcPVvtfMbtwFHv0NRqQjNfu.png",
-              "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/21d2d5af-ce59-4738-bae7-bde2877252ab-svjGc8Gho4rBVWpaF5CGTd5Js9LKK8.png",
-              "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/885305f3-0a52-4ea0-b4f9-a426f563c12b-MCvbCoOydoKKgIyYW9LWYzuf7gxjSy.png",
-              "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/infinite-images/18ac66c2-138a-43cf-a42f-bda66f65321f-RUTnbgd8eViwI0FLjhb0X44ecqIVTR.png"
-            ].map((img, i) => (
-              <div key={i} className={`rounded-lg overflow-hidden border border-border h-64 ${i === 3 || i === 4 ? 'md:col-span-1 lg:col-span-1.5' : ''}`}>
-                <img src={img} alt={`Deployment ${i+1}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-              </div>
+          <div className="flex flex-col gap-12">
+            {products.map((p, i) => (
+              <motion.div key={p.name} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}>
+                <TiltCard className="bg-[#0A1628] border border-white/8 rounded-2xl overflow-hidden hover:border-white/15 transition-colors" intensity={4}>
+                  <div className={`grid grid-cols-1 lg:grid-cols-2 ${i % 2 === 1 ? "lg:grid-flow-dense" : ""}`}>
+                    <div className={`relative h-72 lg:h-auto overflow-hidden ${i % 2 === 1 ? "lg:col-start-2" : ""}`}>
+                      <img src={p.img} alt={p.name} className="w-full h-full object-cover opacity-70 hover:opacity-90 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/80 via-transparent to-transparent lg:hidden" />
+                    </div>
+                    <div className="p-10 flex flex-col justify-center">
+                      <span className="text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border w-fit mb-4" style={{ color: p.color, borderColor: `${p.color}40`, background: `${p.color}10` }}>
+                        {p.label}
+                      </span>
+                      <h3 className="text-3xl font-serif font-bold text-white mb-2">{p.name}</h3>
+                      <p className="font-semibold mb-4" style={{ color: p.color }}>{p.tagline}</p>
+                      <p className="text-white/50 leading-relaxed text-sm mb-6">{p.what}</p>
+
+                      <div className="grid grid-cols-2 gap-2 mb-6">
+                        {p.highlights.map((h) => (
+                          <div key={h} className="flex items-center gap-2 text-xs text-white/60">
+                            <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                            {h}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {p.industries.map((s) => (
+                          <span key={s} className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded">{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Portfolio Matrix */}
-      <section className="py-24 bg-card border-y border-border">
+      {/* ── INDUSTRY COVERAGE ─────────────────────────────────────── */}
+      <section className="py-24 bg-[#080F1E] border-y border-white/5">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mb-16">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">OUR PORTFOLIO</span>
-            <h2 className="text-4xl font-serif font-bold text-white mb-6">Designed in Botswana for global deployment across mission-critical industries.</h2>
-            <p className="text-xl text-muted-foreground">
-              Early traction with enterprise-grade platforms across Insurance, Financial Services, Hospitality, Mining, Telecommunications and Government.
-            </p>
-          </div>
-
-          <div className="mb-12 flex flex-wrap gap-3">
-            {["Insurance", "Financial Services", "Government", "Mining", "Telecommunications", "Hospitality", "SMEs"].map((industry, i) => (
-              <div key={i} className="px-4 py-2 rounded-full border border-border bg-background text-sm font-medium text-muted-foreground">
-                {industry}
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { title: "ABI Orchestrator", subtitle: "AI orchestration", industries: "All" },
-              { title: "RiskSight AI", subtitle: "Risk intelligence", industries: "Insurance, Financial Services, Mining" },
-              { title: "PrimeCover360", subtitle: "Insurance management", industries: "Insurance" },
-              { title: "BookMate AI", subtitle: "Hospitality automation", industries: "Hospitality" }
-            ].map((product, i) => (
-              <div key={i} className="p-8 border border-border rounded-lg bg-background hover:border-primary/50 transition-colors">
-                <h3 className="text-2xl font-serif font-bold text-white mb-2">{product.title}</h3>
-                <p className="text-primary font-medium mb-6">{product.subtitle}</p>
-                <p className="text-sm text-muted-foreground"><strong>Industries:</strong> {product.industries}</p>
-              </div>
-            ))}
-          </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Industry Coverage</span>
+              <h2 className="text-4xl font-serif font-bold text-white mb-4">Sectors we serve.</h2>
+            </motion.div>
+            <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4">
+              {[
+                "Government & Ministries",
+                "Parastatals (BPC · WUC · BURS · BTC · BPOPF)",
+                "Financial Services & Banking",
+                "Insurance & Assurance",
+                "Mining & Resources (Debswana · BCL · Khoemacau)",
+                "Telecommunications",
+                "Hospitality & Tourism",
+                "SMEs & Professional Services",
+              ].map((s) => (
+                <span key={s} className="px-5 py-2.5 rounded-full border border-white/10 bg-[#0A1628] text-sm text-white/60 hover:border-[#00D4FF]/30 hover:text-[#00D4FF]/80 transition-colors cursor-default">
+                  {s}
+                </span>
+              ))}
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 bg-background">
+      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
+      <section className="py-28 bg-[#060C1A]">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase mb-4 block">CLIENT REVIEWS</span>
-            <h2 className="text-4xl font-serif font-bold text-white">We don't collect praise. We ship platforms that work.</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              {
-                quote: "We went live with PrimeCover360 in six weeks. Not six months. Our claims team could see the difference in the first week.",
-                author: "Thabo M., Operations Lead, Insurance, Gaborone"
-              },
-              {
-                quote: "RiskSight flagged a compliance gap our manual review missed for three quarters. That one alert saved us more than the license cost.",
-                author: "Bontle K., Risk Manager, Financial Services, Gaborone"
-              },
-              {
-                quote: "We run a mid-sized hotel group. BookMate replaced three spreadsheets and a shared calendar. Now check-in data flows straight into finance.",
-                author: "Lerato S., General Manager, Hospitality, Gaborone"
-              },
-              {
-                quote: "ABI orchestrated a workflow that used to take two people three days. Now it runs in under an hour. No drama. Just data moving.",
-                author: "Kealeboga R., Head of Operations, Telecommunications"
-              }
-            ].map((t, i) => (
-              <div key={i} className="p-8 border border-border rounded-lg bg-card">
-                <p className="text-lg text-white mb-6 leading-relaxed">"{t.quote}"</p>
-                <p className="text-sm font-medium text-muted-foreground">— {t.author}</p>
-              </div>
-            ))}
-          </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="text-center mb-16 max-w-2xl mx-auto">
+              <span className="text-[#00D4FF] text-xs font-bold tracking-widest uppercase mb-4 block">Client Reviews</span>
+              <h2 className="text-4xl font-serif font-bold text-white">We ship platforms that work.</h2>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { quote: "RiskSight caught a procurement anomaly our internal audit had missed for three consecutive quarters. That single flag saved the organisation more than the annual licence fee.", author: "Head of Risk, Financial Services Institution, Gaborone" },
+                { quote: "Risk-IQ replaced nine separate Excel risk registers across our departments. The Head of Risk now has a live consolidated view instead of a weekly email chain.", author: "CFO, Parastatal Organisation, Botswana" },
+                { quote: "PrimeCover360 went live in six weeks. Our claims team could see the difference in the first week. Policy issuance time dropped by 65% — with full audit trails for NBFIRA.", author: "Operations Lead, Insurance Company, Gaborone" },
+                { quote: "BookMate took over our reservation system and front desk scheduling in one afternoon. Guests scan, WhatsApp back and forth, and they're booked. No staff involvement required.", author: "General Manager, Boutique Lodge, Kasane, Botswana" },
+              ].map((t, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className="p-8 bg-[#0A1628] border border-white/8 rounded-xl h-full hover:border-white/15 transition-colors" intensity={6}>
+                    <div className="text-[#00D4FF]/30 text-4xl font-serif leading-none mb-4">"</div>
+                    <p className="text-white/70 text-base leading-relaxed mb-6">{t.quote}</p>
+                    <p className="text-xs text-white/40">— {t.author}</p>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
+
     </div>
   );
 }
