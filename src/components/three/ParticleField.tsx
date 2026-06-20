@@ -5,6 +5,7 @@ interface ParticleFieldProps {
   className?: string;
   color?: string;
   linkDistance?: number;
+  pointerRadius?: number;
 }
 
 interface Node {
@@ -12,13 +13,15 @@ interface Node {
   y: number;
   vx: number;
   vy: number;
+  r: number;
 }
 
 export function ParticleField({
   nodeCount = 60,
   className = "",
   color = "0, 212, 255",
-  linkDistance = 130,
+  linkDistance = 170,
+  pointerRadius = 200,
 }: ParticleFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -39,13 +42,15 @@ export function ParticleField({
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let nodes: Node[] = [];
     let animationFrame: number;
+    let pointer: { x: number; y: number } | null = null;
 
     const createNodes = () => {
       nodes = Array.from({ length: nodeCount }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: 2.5 + Math.random() * 3.5,
       }));
     };
 
@@ -61,10 +66,39 @@ export function ParticleField({
       createNodes();
     };
 
+    const handlePointerMove = (e: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x >= 0 && x <= width && y >= 0 && y <= height) {
+        pointer = { x, y };
+      } else {
+        pointer = null;
+      }
+    };
+
+    const handlePointerLeave = () => {
+      pointer = null;
+    };
+
     const step = () => {
       ctx.clearRect(0, 0, width, height);
 
       for (const n of nodes) {
+        if (pointer) {
+          const dx = pointer.x - n.x;
+          const dy = pointer.y - n.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist < pointerRadius) {
+            const pull = (1 - dist / pointerRadius) * 0.02;
+            n.vx += (dx / dist) * pull;
+            n.vy += (dy / dist) * pull;
+          }
+        }
+
+        n.vx *= 0.98;
+        n.vy *= 0.98;
+
         n.x += n.vx;
         n.y += n.vy;
 
@@ -73,9 +107,17 @@ export function ParticleField({
         n.x = Math.min(Math.max(n.x, 0), width);
         n.y = Math.min(Math.max(n.y, 0), height);
 
+        const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        glow.addColorStop(0, `rgba(${color}, 0.35)`);
+        glow.addColorStop(1, `rgba(${color}, 0)`);
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${color}, 0.8)`;
+        ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${color}, 0.9)`;
         ctx.fill();
       }
 
@@ -90,7 +132,7 @@ export function ParticleField({
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(${color}, ${0.25 * (1 - dist / linkDistance)})`;
+            ctx.strokeStyle = `rgba(${color}, ${0.18 * (1 - dist / linkDistance)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -106,6 +148,8 @@ export function ParticleField({
       step();
     } else {
       animationFrame = requestAnimationFrame(step);
+      window.addEventListener("pointermove", handlePointerMove);
+      window.addEventListener("pointerleave", handlePointerLeave);
     }
 
     const resizeObserver = new ResizeObserver(resize);
@@ -114,8 +158,10 @@ export function ParticleField({
     return () => {
       cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerleave", handlePointerLeave);
     };
-  }, [nodeCount, color, linkDistance]);
+  }, [nodeCount, color, linkDistance, pointerRadius]);
 
   return (
     <canvas

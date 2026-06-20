@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">
-            <img src={Logo} alt="NEXIS" className="h-10 mb-6" />
+            <img src={Logo} alt="NEXIS" className="h-12 mb-6" />
             <p className="text-muted-foreground max-w-md">
               NEXT INTELLIGENCE SYSTEMS · AI-Powered Intelligence Platforms · Botswana & Africa
             </p>
