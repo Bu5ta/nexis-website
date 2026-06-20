@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import Logo from "@/assets/nexis-logo.svg";
+import Logo from "@/assets/nexis-logo-mark.svg";
 
 export function Footer() {
   return (
