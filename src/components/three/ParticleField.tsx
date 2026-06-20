@@ -33,10 +33,6 @@ export function ParticleField({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -144,13 +140,9 @@ export function ParticleField({
 
     resize();
 
-    if (prefersReducedMotion) {
-      step();
-    } else {
-      animationFrame = requestAnimationFrame(step);
-      window.addEventListener("pointermove", handlePointerMove);
-      window.addEventListener("pointerleave", handlePointerLeave);
-    }
+    animationFrame = requestAnimationFrame(step);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", handlePointerLeave);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
