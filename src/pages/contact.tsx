@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { ParticleField } from "@/components/three/ParticleField";
 
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } } as const;
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 export default function Contact() {
@@ -24,27 +24,29 @@ export default function Contact() {
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const body = {
-      name: data.get("name") as string,
-      email: data.get("email") as string,
-      phone: data.get("phone") as string,
-      company: data.get("company") as string,
-      industry: data.get("industry") as string,
-      product: selectedProduct,
-      message: data.get("message") as string,
-    };
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const phone = data.get("phone") as string;
+    const company = data.get("company") as string;
+    const industry = data.get("industry") as string;
+    const message = data.get("message") as string;
+
+    const subject = `New enquiry from ${name} (${company})`;
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone || "—"}`,
+      `Organisation: ${company}`,
+      `Industry: ${industry || "—"}`,
+      `Product of interest: ${selectedProduct || "—"}`,
+      "",
+      "Message:",
+      message,
+    ].join("\n");
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (res.ok) {
-        setStatus("sent");
-      } else {
-        setStatus("error");
-      }
+      window.location.href = `mailto:hello@nexis.co.bw?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      setStatus("sent");
     } catch {
       setStatus("error");
     }
@@ -125,8 +127,8 @@ export default function Contact() {
                     <div className="w-12 h-12 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/30 flex items-center justify-center mx-auto mb-4">
                       <span className="text-[#00D4FF] text-xl">✓</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Message Sent</h3>
-                    <p className="text-white/50 text-sm">We'll be in touch shortly. You can also reach us at <a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF]">hello@nexis.co.bw</a></p>
+                    <h3 className="text-xl font-bold text-white mb-2">Almost there</h3>
+                    <p className="text-white/50 text-sm">Your email app should have opened with your message ready to go — just hit send. Didn't open? Email us directly at <a href="mailto:hello@nexis.co.bw" className="text-[#00D4FF]">hello@nexis.co.bw</a></p>
                     <Button variant="outline" className="mt-6 border-white/20 text-white hover:bg-white/5" onClick={() => { setStatus("idle"); setSelectedProduct(""); }}>Send another</Button>
                   </div>
                 ) : (

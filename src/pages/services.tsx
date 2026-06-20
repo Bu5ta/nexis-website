@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ParticleField } from "@/components/three/ParticleField";
 import { TiltCard } from "@/components/three/TiltCard";
 
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } } as const;
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 export default function Services() {
@@ -208,7 +208,10 @@ export default function Services() {
                   <div className="absolute -inset-4 rounded-2xl opacity-20 blur-xl" style={{ background: "radial-gradient(circle, #00CCAA, transparent)" }} />
                   <div className="relative bg-[#0A1628] border border-[#00CCAA]/30 rounded-2xl p-8 text-center">
                     <p className="text-[#00CCAA] text-xs font-bold tracking-widest uppercase mb-4">Try BookMate AI</p>
-                    <img src="/bookmate-qr.jpg" alt="BookMate AI — Scan to try on WhatsApp" className="w-48 h-48 mx-auto rounded-lg" />
+                    <div className="w-48 h-48 mx-auto rounded-lg border border-[#00CCAA]/30 bg-[#0A1628] flex flex-col items-center justify-center gap-2 px-4 text-center">
+                      <span className="text-[#00CCAA]/70 text-xs uppercase tracking-widest">QR code coming soon</span>
+                      <a href="mailto:hello@nexis.co.bw" className="text-white/60 text-xs underline hover:text-[#00CCAA] transition-colors">Message us for early access</a>
+                    </div>
                     <p className="text-white/60 text-sm mt-4">Scan on mobile · Text "Hello" · Get booked</p>
                   </div>
                 </div>

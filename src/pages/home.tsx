@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ParticleField } from "@/components/three/ParticleField";
 import { TiltCard } from "@/components/three/TiltCard";
 
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } };
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } } as const;
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 const products = [
