@@ -1,13 +1,9 @@
 import { useEffect, useRef } from "react";
 
 interface ParticleFieldProps {
-  /** Number of particles to render */
   nodeCount?: number;
-  /** Extra classes applied to the canvas (e.g. opacity) */
   className?: string;
-  /** Hex color used for nodes + connecting lines */
   color?: string;
-  /** Max distance (px) at which two nodes draw a connecting line */
   linkDistance?: number;
 }
 
@@ -18,11 +14,6 @@ interface Node {
   vy: number;
 }
 
-/**
- * Lightweight canvas-based "network" particle background.
- * Fills its parent container (expects the parent to provide sizing,
- * e.g. `absolute inset-0`).
- */
 export function ParticleField({
   nodeCount = 60,
   className = "",
@@ -73,7 +64,6 @@ export function ParticleField({
     const step = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // update + draw nodes
       for (const n of nodes) {
         n.x += n.vx;
         n.y += n.vy;
@@ -89,7 +79,6 @@ export function ParticleField({
         ctx.fill();
       }
 
-      // draw links between nearby nodes
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i];
@@ -114,7 +103,6 @@ export function ParticleField({
     resize();
 
     if (prefersReducedMotion) {
-      // Draw a single static frame instead of animating.
       step();
     } else {
       animationFrame = requestAnimationFrame(step);

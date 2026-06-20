@@ -4,14 +4,9 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 interface TiltCardProps {
   children: React.ReactNode;
   className?: string;
-  /** How strong the tilt effect is. Higher = more dramatic tilt. */
   intensity?: number;
 }
 
-/**
- * Wraps children in a card that tilts in 3D following the pointer,
- * with a smooth spring back to neutral on mouse leave.
- */
 export function TiltCard({ children, className = "", intensity = 10 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
 

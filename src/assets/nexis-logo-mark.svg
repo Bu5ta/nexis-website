@@ -5,8 +5,6 @@
       <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-
-  <!-- Icon mark -->
   <g transform="translate(110, 148)">
     <polygon points="50,0 86,20 86,60 50,80 14,60 14,20" fill="none" stroke="#00D4FF" stroke-width="2.5" filter="url(#glow)"/>
     <line x1="30" y1="64" x2="30" y2="16" stroke="#00D4FF" stroke-width="5" stroke-linecap="round"/>
@@ -18,7 +16,5 @@
     <circle cx="70" cy="64" r="4" fill="#00D4FF" filter="url(#glow)"/>
     <circle cx="50" cy="40" r="3" fill="#FFFFFF" opacity="0.7"/>
   </g>
-
-  <!-- Wordmark -->
   <text x="230" y="228" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="700" letter-spacing="16" fill="#FFFFFF">NEXIS</text>
 </svg>
