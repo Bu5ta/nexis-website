@@ -92,8 +92,13 @@ export function ParticleField({
           }
         }
 
-        n.vx *= 0.98;
-        n.vy *= 0.98;
+        // Speed cap — keeps particles drifting at a consistent speed
+        const speed = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+        const maxSpeed = 0.4;
+        if (speed > maxSpeed) {
+          n.vx = (n.vx / speed) * maxSpeed;
+          n.vy = (n.vy / speed) * maxSpeed;
+        }
 
         n.x += n.vx;
         n.y += n.vy;
