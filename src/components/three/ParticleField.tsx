@@ -41,13 +41,23 @@ export function ParticleField({
     let pointer: { x: number; y: number } | null = null;
 
     const createNodes = () => {
-      nodes = Array.from({ length: nodeCount }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: 2.5 + Math.random() * 3.5,
-      }));
+      nodes = Array.from({ length: nodeCount }, () => {
+        let vx = (Math.random() - 0.5) * 0.5;
+        let vy = (Math.random() - 0.5) * 0.5;
+        const minSpeed = 0.15;
+        const speed = Math.sqrt(vx * vx + vy * vy) || 1;
+        if (speed < minSpeed) {
+          vx = (vx / speed) * minSpeed;
+          vy = (vy / speed) * minSpeed;
+        }
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx,
+          vy,
+          r: 2.5 + Math.random() * 3.5,
+        };
+      });
     };
 
     const resize = () => {

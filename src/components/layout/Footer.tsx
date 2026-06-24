@@ -16,18 +16,18 @@ export function Footer() {
             <h4 className="font-serif font-bold text-lg mb-6">Company</h4>
             <div className="flex flex-col gap-4">
               <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
-              <Link href="/services" className="text-muted-foreground hover:text-primary transition-colors">Services</Link>
+              <Link href="/services" className="text-muted-foreground hover:text-primary transition-colors">Products</Link>
               <Link href="/portfolio" className="text-muted-foreground hover:text-primary transition-colors">Work</Link>
               <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link>
             </div>
           </div>
           <div>
             <h4 className="font-serif font-bold text-lg mb-6">Products</h4>
-            <div className="flex flex-col gap-4 text-muted-foreground">
-              <span>ABI</span>
-              <span>RiskSight</span>
-              <span>PrimeCover</span>
-              <span>BookMate</span>
+            <div className="flex flex-col gap-4">
+              <Link href="/services#risksight" className="text-muted-foreground hover:text-primary transition-colors">RiskSight AI</Link>
+              <Link href="/services#riskiq" className="text-muted-foreground hover:text-primary transition-colors">Risk-IQ</Link>
+              <Link href="/services#primecover" className="text-muted-foreground hover:text-primary transition-colors">PrimeCover360</Link>
+              <Link href="/services#bookmate" className="text-muted-foreground hover:text-primary transition-colors">BookMate AI</Link>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@ export function Footer() {
           </div>
           <div className="text-center md:text-right">
             <p>Unit 3, Plot 1632, Gaborone International Commerce Park, Gaborone</p>
-            <p className="mt-2">© 2025 NEXIS (Next Intelligence Systems). All rights reserved.</p>
+            <p className="mt-2">© 2026 NEXIS (Next Intelligence Systems). All rights reserved.</p>
           </div>
         </div>
       </div>

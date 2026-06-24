@@ -62,7 +62,7 @@ export default function About() {
               {
                 name: "Modise Marumo",
                 title: "Founder & Lead Engineer",
-                bio: "Modise Marumo architect the ABI Orchestrator, RiskSight Ai, PrimeCover360 Cloud and BookMate Ai platforms bringing enterprise-grade AI to complex industries.",
+                bio: "Modise Marumo architected the ABI Orchestrator, RiskSight AI, PrimeCover360 Cloud and BookMate AI platforms, bringing enterprise-grade AI to complex industries.",
                 img: "https://rjdavx8ozyznxeyh.public.blob.vercel-storage.com/production/websites/uploaded-media/IMG_9480-TawbGOzWfm5tc8KIhJfjkrApLIqWO6.JPG"
               },
               {
